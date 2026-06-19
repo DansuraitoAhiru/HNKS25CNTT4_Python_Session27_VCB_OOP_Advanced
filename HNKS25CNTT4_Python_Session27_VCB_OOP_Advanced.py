@@ -104,20 +104,19 @@ class CreditAccount(BaseAccount):
 
 
 class DigitalPremiumMixin:
-    def crash_back(self, amount):
+    def cashback_reward(self, amount):
         if amount > 5000000:
             reward = amount * 0.01
-            self._set_balance(self.balance + reward)
+            self._set_balance(self.balance + amount + reward)
+            print(f"[Ưu đãi Premium]: Bạn được hoàn tiền 1% ({reward:,.0f} VND) vào tài khoản!")
+        else:
+            self._set_balance(self.balance + amount)
 
 
 class HybridAccount(SavingsAccount, DigitalPremiumMixin):
     def __init__(self, account_number, owner_name, interest_rate):
         super().__init__(account_number, owner_name, interest_rate)
 
-    def deposit(self, amount):
-        refund = amount * 0.01
-        self._set_balance(self.balance + amount + refund)
-        return refund
 
     def withdraw(self, amount):
         return super().withdraw(amount)
@@ -223,9 +222,7 @@ Chọn giao dịch (1-2): ''').strip()
     if sub_choice == "1":
         amount = input_float("Nhập số tiền cần nạp: ")
         if isinstance(current_account, HybridAccount):
-            refund = current_account.deposit(amount)
-            print(
-                f"[Ưu đãi Premium]: Bạn được hoàn tiền 1% ({refund:,.0f} VND) vào tài khoản!")
+            current_account.cashback_reward(amount)
             print(f"Số dư mới: {current_account.balance:,.0f} VND")
 
         else:
