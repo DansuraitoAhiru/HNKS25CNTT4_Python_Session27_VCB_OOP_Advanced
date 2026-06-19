@@ -253,14 +253,14 @@ def calculate_interest(current_account):
     if isinstance(current_account, CreditAccount):
         print("Tài khoản Tín dụng không được hỗ trợ tính năng này!")
         return
+    
     else:
         print("--- TÍNH LÃI ĐỊNH KỲ ---")
         print(f"Số dư trước tính lãi: {current_account.balance:,.0f} VND")
         print(f"Lãi suất năm: {current_account.interest_rate*100:.1f}%")
         interest = current_account.apply_interest()
         print(f"Tiền lãi nhận được: +{interest:,.0f} VND")
-        print(
-            f"Số dư mới sau khi cộng lãi: {current_account.balance:,.0f} VND")
+        print(f"Số dư mới sau khi cộng lãi: {current_account.balance:,.0f} VND")
 
 
 def merging_and_compare(accounts, current_account):
@@ -269,14 +269,17 @@ def merging_and_compare(accounts, current_account):
         return
 
     print("--- ĐỒNG BỘ & SO SÁNH TÀI KHOẢN (OPERATOR OVERLOADING) ---")
-    print(
-        f"Tài khoản hiện tại (A): {current_account.owner_name} (Số dư: {current_account.balance:,.0f} VND)")
+    print(f"Tài khoản hiện tại (A): {current_account.owner_name} (Số dư: {current_account.balance:,.0f} VND)")
+
     while True:
-        merge_number = check_space(
-            "Chọn tài khoản đối ứng (B) từ danh sách hệ thống: ")
+        merge_number = check_space("Chọn tài khoản đối ứng (B) từ danh sách hệ thống: ")
 
         if not BaseAccount.validate_account_number(merge_number):
             print("Số tài khoản không hợp lệ! Phải gồm đúng 10 chữ số.")
+            continue
+
+        if merge_number == current_account.account_number:
+            print("Tài khoản đã bị trùng với tài khoản hiện tại")
             continue
         break
 
@@ -294,28 +297,23 @@ def merging_and_compare(accounts, current_account):
     print(f"\r({found.owner_name} - Số dư: {found.balance:,.0f} VND)")
 
     if current_account < found:
-        print(
-            "\n[Kết quả So sánh (__lt__)]: Số dư tài khoản A NHỎ HƠN số dư tài khoản B.")
+        print("\n[Kết quả So sánh (__lt__)]: Số dư tài khoản A NHỎ HƠN số dư tài khoản B.")
     else:
-        print(
-            " [Kết quả So sánh (__lt__)]: Số dư tài khoản A LỚN HƠN số dư tài khoản B.")
+        print(" [Kết quả So sánh (__lt__)]: Số dư tài khoản A LỚN HƠN số dư tài khoản B.")
 
     total_balance = current_account + found
-    print(
-        f"[Kết quả Tổng hợp (__add__)]: Tổng số tiền sở hữu của cả 2 tài khoản là: {total_balance:,.0f} VND.")
+    print(f"[Kết quả Tổng hợp (__add__)]: Tổng số tiền sở hữu của cả 2 tài khoản là: {total_balance:,.0f} VND.")
 
 
 class VNPayGateway:
     def execute_pay(self, account, amount):
-        print(
-            f"[Hệ thống VNPay]: Đang kết nối tới tài khoản {account.account_number}...")
+        print(f"[Hệ thống VNPay]: Đang kết nối tới tài khoản {account.account_number}...")
         account.withdraw(amount)
 
 
 class ViettelMoneyGateway:
     def execute_pay(self, account, amount):
-        print(
-            f"[Hệ thống Viettel Money]: Đang kết nối tới tài khoản {account.account_number}...")
+        print(f"[Hệ thống Viettel Money]: Đang kết nối tới tài khoản {account.account_number}...")
         account.withdraw(amount)
 
 
